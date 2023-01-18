@@ -105,12 +105,9 @@ files:
         }
     }
   learner_created: false
-- name: doc.pdf
-  visible: true
-  learner_created: true
-feedback_link: https://hyperskill.org/projects/64/stages/343/implement#comment
+feedback_link: https://hyperskill.org/learn/step/5485#comment
 status: Solved
 feedback:
   message: Congratulations!
   time: Fri, 13 Jan 2023 10:35:44 UTC
-record: -1
+record: 1
