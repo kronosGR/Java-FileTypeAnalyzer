@@ -2,90 +2,53 @@ package analyzer;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
+    private static int THREADS = 10;
     public static void main(String[] args) {
-        String type = args[0];
-        String file = args[1];
-        String pattern = args[2];
-        String resString = args[3];
 
-        long startTime = System.nanoTime();
+        String path = args[0];
+        if (!Files.isDirectory(Path.of(path))) {
+            System.out.println("The directory-path gives '" + path + "' is not valid!");
+            System.exit(1);
+        }
 
+        String search = args[1];
+        String searchMessage = args[2];
 
-        try (InputStream in = new FileInputStream(file);) {
-            byte[] bytesRead = in.readAllBytes();
-            String tmp = new String(bytesRead, Charset.defaultCharset());
-
-            switch (type.substring(2)) {
-                case "naive":
-                    if (tmp.contains(pattern)) {
-                        System.out.println(resString);
-                    } else {
-                        System.out.println("Unknown file type");
-                    }
-                    break;
-                case "KMP":
-                    if (searchKPM(tmp, pattern)){
-                        System.out.println(resString);
-                    } else {
-                        System.out.println("Unknown file type");
-                    }
-                    break;
-            }
-            long elapsed = System.nanoTime() - startTime;
-            System.out.printf("It took %f seconds", (double)elapsed/1000000000 );
-
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+        ExecutorService executor = Executors.newFixedThreadPool(THREADS);
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Path.of(path))) {
+            directoryStream.forEach(p->{
+                if (Files.isRegularFile(p)){
+                    // execute the file analyze
+                    executor.submit(() -> new Analyzer(search, searchMessage).execute(p));
+                }
+            });
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.printf("Could not read from directory '%s'!%n", path);
         }
-
-    }
-
-    private static boolean searchKPM(String t, String p) {
-        // find the prefix
-        int[] prefix = getPrefix(p);
-
-        int j = 0;
-        for (int i = 0; i < t.length(); i++) {
-            while (j > 0 && t.charAt(i) != p.charAt(j)) {
-                j = prefix[j - 1];
-            }
-
-            if (t.charAt(i) == p.charAt(j)) {
-                j += 1;
-            }
-
-            if (j == p.length()) {
-                return true;
-
+        finally {
+            executor.shutdown();
+            try {
+                if (!executor.awaitTermination(100, TimeUnit.SECONDS)) {
+                    executor.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         }
 
-        return false;
+
     }
 
-    private static int[] getPrefix(String s) {
-        int len = s.length();
-        int[] prefix = new int[len];
 
-        for (int i = 1; i < len; i++) {
-            int j = prefix[i - 1];
-
-            while (j > 0 && s.charAt(i) != s.charAt(j)) {
-                j = prefix[j - 1];
-            }
-
-            if (s.charAt(i) == s.charAt(j)) {
-                j += 1;
-            }
-            prefix[i] = j;
-        }
-
-        return prefix;
-    }
 }
