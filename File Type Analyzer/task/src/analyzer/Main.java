@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
-    private static int THREADS = 10;
+    private static int THREADS = 5;
     public static void main(String[] args) {
 
         String path = args[0];
@@ -25,27 +25,26 @@ public class Main {
         String search = args[1];
         String searchMessage = args[2];
 
-        ExecutorService executor = Executors.newFixedThreadPool(THREADS);
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Path.of(path))) {
             directoryStream.forEach(p->{
                 if (Files.isRegularFile(p)){
                     // execute the file analyze
-                    executor.submit(() -> new Analyzer(search, searchMessage).execute(p));
+                    Thread thead = new Thread(()->{
+                       Analyzer tmp = new Analyzer(search, searchMessage);
+                       tmp.execute(p);
+                    });
+                    thead.start();
+                    try {
+                        thead.join();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             });
         } catch (IOException e) {
             System.out.printf("Could not read from directory '%s'!%n", path);
         }
-        finally {
-            executor.shutdown();
-            try {
-                if (!executor.awaitTermination(100, TimeUnit.SECONDS)) {
-                    executor.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
+
 
 
     }

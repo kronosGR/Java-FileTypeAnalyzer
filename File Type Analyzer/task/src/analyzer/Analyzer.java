@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 
+
 public class Analyzer {
 
     private int BUFFER_SIZE = 68108864;
@@ -26,10 +27,10 @@ public class Analyzer {
                 String tmp = new String(buffer, Charset.defaultCharset());
                 if (Algorithms.searchKPM(tmp, search)) {
                     System.out.println(path.getFileName().toString() + ": " + searchMessage);
-                } else {
-                    System.out.println(path.getFileName().toString() + ": Unknown file type");
+                    return;
                 }
             }
+            System.out.println(path.getFileName().toString() + ": Unknown file type");
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

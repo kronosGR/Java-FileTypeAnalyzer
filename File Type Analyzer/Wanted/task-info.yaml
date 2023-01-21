@@ -183,31 +183,15 @@ files:
 
     }
   learner_created: false
-- name: src/analyzer/Analyzer.java
-  visible: true
-  learner_created: true
 - name: src/analyzer/Algorithms.java
   visible: true
   learner_created: true
-- name: 1.pdf
+- name: src/analyzer/Analyzer.java
   visible: true
   learner_created: true
 feedback_link: https://hyperskill.org/learn/step/5487#comment
-status: Failed
+status: Solved
 feedback:
-  message: |-
-    Wrong answer in test #4
-
-    There is should be 10 lines in the output when you check 10 files!
-    Make sure you don&#39;t print empty lines.
-
-    Please find below the output of your program during this failed test.
-
-    ---
-
-    Arguments: test_files %txt- &quot;TXT document&quot;
-
-    doc5.pdf: TXT document
-    doc7.pdf: TXT document
-  time: Fri, 20 Jan 2023 19:08:41 UTC
+  message: Congratulations!
+  time: Sat, 21 Jan 2023 11:39:25 UTC
 record: -1
