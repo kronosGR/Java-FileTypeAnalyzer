@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="MainTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-01-22T11:07:40" hostname="DESKTOP-KVPJL09" time="0.252">
+<testsuite name="MainTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-01-23T09:47:23" hostname="DESKTOP-KVPJL09" time="0.347">
   <properties/>
-  <testcase name="start" classname="MainTest" time="0.252"/>
+  <testcase name="start" classname="MainTest" time="0.347"/>
   <system-out><![CDATA[?[1;31m
 Start test 1?[0m
 doc.pdf: PDF document
